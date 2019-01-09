@@ -1,6 +1,12 @@
 version: "2"
 
 services:
+
+  functionapp:
+    build: ./functionapp/.
+    ports: 
+      - "8080:80"
+
   voting-app:
     build: ./voting-app/.
     #volumes:
