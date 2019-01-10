@@ -13,7 +13,7 @@ resourceGroupName=resourcegroup$APPNAME
 location=eastus
 
 # Login to Azure
-# az login --service-principal --username "$APP_ID" --password "$PASSWORD" --tenant "$TENANT_ID" 
+az login --service-principal --username "$APP_ID" --password "$PASSWORD" --tenant "$TENANT_ID" 
 
 # Create a resource group.
 az group create --name $resourceGroupName --location $location
