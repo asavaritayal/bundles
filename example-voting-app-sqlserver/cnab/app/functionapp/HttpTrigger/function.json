@@ -12,6 +12,17 @@
       ]
     },
     {
+      "direction": "out",
+      "type": "cosmosDB",
+      "name": "doc",
+      "databaseName": "test",
+      "collectionName": "Items",
+      "leaseCollectionName": "leases",
+      "createLeaseCollectionIfNotExists": true,
+      "connectionStringSetting": "CosmosConnectionString",
+      "createIfNotExists": true
+    },
+    {
       "type": "http",
       "direction": "out",
       "name": "$return"

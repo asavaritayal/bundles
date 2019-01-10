@@ -25,6 +25,37 @@ az storage account create \
   --resource-group $resourceGroupName \
   --sku Standard_LRS
 
+# Create an Azure Cosmos DB database using the same function app name.
+az cosmosdb create \
+  --name $functionAppName \
+  --resource-group $resourceGroupName \
+
+# Get the Azure Cosmos DB connection string.
+endpoint=$(az cosmosdb show \
+  --name $functionAppName \
+  --resource-group $resourceGroupName \
+  --query documentEndpoint \
+  --output tsv)
+
+key=$(az cosmosdb list-keys \
+  --name $functionAppName \
+  --resource-group $resourceGroupName \
+  --query primaryMasterKey \
+  --output tsv)
+
+az cosmosdb database create \
+  --db-name test \
+  --name $functionAppName \
+  --key $key \
+  --url-connection $endpoint
+
+az cosmosdb collection create \
+  --collection-name Items \
+  --db-name test \
+  --name $functionAppName \
+  --key $key \
+  --url-connection $endpoint
+
 # Create a serverless function app in the resource group.
 az functionapp create \
     --resource-group $resourceGroupName \
@@ -33,6 +64,15 @@ az functionapp create \
     --name $functionAppName \
     --storage-account  $storageName \
     --runtime python
+
+
+connectionstring=AccountEndpoint="$endpoint"";AccountKey=""$key"";"
+
+# Configure function app settings to use the Azure Cosmos DB connection string.
+az functionapp config appsettings set \
+  --name $functionAppName \
+  --resource-group $resourceGroupName \
+  --setting CosmosConnectionString=$connectionstring
 
 # Deploy the function app project
 func azure functionapp publish $functionAppName

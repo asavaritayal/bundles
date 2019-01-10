@@ -1,24 +1,16 @@
 import logging
+import json
 
 import azure.functions as func
 
+def main(req: func.HttpRequest, doc: func.Out[func.Document]) -> func.HttpResponse:
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
+    vote_data = req.get_json()
+    voter_id = vote_data.get('voter_id')
+    vote = vote_data.get('vote')
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
+    logging.info(f'Processing vote for {vote} by {voter_id}')
 
-    if name:
-        return func.HttpResponse(f"Hello {name}!")
-    else:
-        return func.HttpResponse(
-             "Please pass a name on the query string or in the request body",
-             status_code=400
-        )
+    doc.set(func.Document.from_json(json.dumps(vote_data)))
+
+    return func.HttpResponse('OK', status_code=200)
