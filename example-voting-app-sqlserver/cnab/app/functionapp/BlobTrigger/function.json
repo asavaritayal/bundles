@@ -2,14 +2,11 @@
   "scriptFile": "__init__.py",
   "bindings": [
     {
-      "authLevel": "anonymous",
-      "type": "httpTrigger",
+      "name": "myblob",
+      "type": "blobTrigger",
       "direction": "in",
-      "name": "req",
-      "methods": [
-        "get",
-        "post"
-      ]
+      "path": "samples-workitems",
+      "connection": "StorageString"
     },
     {
       "direction": "out",
@@ -21,11 +18,6 @@
       "createLeaseCollectionIfNotExists": true,
       "connectionStringSetting": "CosmosConnectionString",
       "createIfNotExists": true
-    },
-    {
-      "type": "http",
-      "direction": "out",
-      "name": "$return"
     }
   ]
 }

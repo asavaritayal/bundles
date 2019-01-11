@@ -4,6 +4,7 @@
 #   - az cli
 #   - func cli (Azure Functions Core Tools)
 #   - $APPNAME
+#   - $STORAGESTRING
 #   - Azure service principal creds: $APPID, $PASSWORD, $TEANANT_ID
 
 # Function app and storage account names must be unique.
@@ -72,7 +73,7 @@ connectionstring=AccountEndpoint="$endpoint"";AccountKey=""$key"";"
 az functionapp config appsettings set \
   --name $functionAppName \
   --resource-group $resourceGroupName \
-  --setting CosmosConnectionString=$connectionstring
+  --setting CosmosConnectionString=$connectionstring StorageString=$STORAGESTRING
 
 # Deploy the function app project
 func azure functionapp publish $functionAppName

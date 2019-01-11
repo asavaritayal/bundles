@@ -1,5 +1,8 @@
 # Using official python runtime base image
-FROM python:2.7-alpine
+FROM python:2.7-jessie
+
+ENV ACC_NAME ""
+ENV ACC_KEY ""
 
 # Set the application directory
 WORKDIR /app
@@ -13,9 +16,6 @@ ADD . /app
 
 # Make port 80 available for links and/or publish
 EXPOSE 80
-
-
-
 
 # Define our command to be run when launching the container
 CMD ["python", "app.py"]
