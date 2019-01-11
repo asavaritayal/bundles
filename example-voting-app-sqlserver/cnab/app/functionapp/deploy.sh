@@ -1,10 +1,7 @@
 #!/bin/bash
 
 # Required to run: 
-#   - az cli
-#   - func cli (Azure Functions Core Tools)
 #   - $APPNAME
-#   - $STORAGESTRING
 #   - Azure service principal creds: $APPID, $PASSWORD, $TEANANT_ID
 
 # Function app and storage account names must be unique.
@@ -14,7 +11,7 @@ resourceGroupName=resourcegroup$APPNAME
 location=eastus
 
 # Login to Azure
-az login --service-principal --username "$APP_ID" --password "$PASSWORD" --tenant "$TENANT_ID" 
+# az login --service-principal --username "$APP_ID" --password "$PASSWORD" --tenant "$TENANT_ID" 
 
 # Create a resource group.
 az group create --name $resourceGroupName --location $location
@@ -25,6 +22,17 @@ az storage account create \
   --location $location \
   --resource-group $resourceGroupName \
   --sku Standard_LRS
+
+# Create a storage container
+storagestring=$(az storage account show-connection-string \
+                -g $resourceGroupName -n $storageName \
+                --query connectionString \
+                --output tsv)
+
+az storage container create \
+  --name samples-workitems \
+  --connection-string "$storagestring" \
+  --public-access container
 
 # Create an Azure Cosmos DB database using the same function app name.
 az cosmosdb create \
@@ -73,7 +81,7 @@ connectionstring=AccountEndpoint="$endpoint"";AccountKey=""$key"";"
 az functionapp config appsettings set \
   --name $functionAppName \
   --resource-group $resourceGroupName \
-  --setting CosmosConnectionString=$connectionstring StorageString=$STORAGESTRING
+  --setting CosmosConnectionString=$connectionstring StorageString=$storagestring
 
 # Deploy the function app project
 func azure functionapp publish $functionAppName
